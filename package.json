@@ -4,13 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/camariana/fs-blog-list.git"
   },
-  "author": "A Camariana",
+  "author": "A. Camariana",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/camariana/fs-blog-list/issues"
@@ -25,6 +28,7 @@
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
     "mongoose": "^5.12.10",
-    "mongoose-unique-validator": "^2.0.3"
+    "mongoose-unique-validator": "^2.0.3",
+    "morgan": "^1.10.0"
   }
 }
