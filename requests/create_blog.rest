@@ -1,0 +1,12 @@
+GET http://localhost:3003/api/blogs/
+
+### You can also add multiple requests in the same file using ### separators:
+POST http://localhost:3003/api/blogs/ HTTP/1.1
+content-type: application/json
+
+{
+    "title": "An Open Letter to Jason and David",
+    "author": "Jane Yang",
+    "url": "https://janeyang.org/2021/04/27/an-open-letter-to-jason-and-david/",
+    "likes": 3
+}
