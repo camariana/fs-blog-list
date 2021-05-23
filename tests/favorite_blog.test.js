@@ -1,17 +1,7 @@
-const totalLikes = require('../utils/list_helper').totalLikes
+const favoriteBlog = require('../utils/list_helper').favoriteBlog
 
-describe('total likes', () => {
-  const blogs = []
-  const listWithOneBlog = [
-    {
-      title: 'An Open Letter to Jason and David',
-      author: 'Jane Yang',
-      url: 'https://janeyang.org/2021/04/27/an-open-letter-to-jason-and-david/',
-      likes: 3,
-      id: '60a6872ce43fdd913cfd1658'
-    }
-  ]
-  const biggerList = [
+describe('favorite blog', () => {
+  const blogs = [
     {
       title: 'An Open Letter to Jason and David',
       author: 'Jane Yang',
@@ -70,15 +60,16 @@ describe('total likes', () => {
     }
   ]
 
-  test('of empty list is zero', () => {
-    expect(totalLikes(blogs)).toBe(0)
+  const results = {
+    title: 'Canonical string reduction',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+    likes: 12,
+    id: '60a8c20937184e1d110b4e97'
+  }
+
+  test('the favorite blog', () => {
+    expect(favoriteBlog(blogs)).toEqual(results)
   })
 
-  test('when list has only one blog, equals the likes of that', () => {
-    expect(totalLikes(listWithOneBlog)).toBe(3)
-  })
-
-  test('of a bigger list is calculated right', () => {
-    expect(totalLikes(biggerList)).toBe(41)
-  })
 })
