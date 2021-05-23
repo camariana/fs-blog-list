@@ -17,7 +17,6 @@ beforeEach(async () => {
 test('blogs are returned as json', async () => {
   await api
     .get('/api/blogs')
-    .expect(200)
     .expect('Content-Type', /application\/json/)
 })
 
@@ -41,6 +40,7 @@ test('verify success of new blog creation', async () => {
     .send(newBlog)
     .expect('Content-Type', /application\/json/)
 
+
   const response = await api.get('/api/blogs')
 
   const contents = response.body.map(r => r.title)
@@ -49,6 +49,28 @@ test('verify success of new blog creation', async () => {
   expect(contents).toContain(
     'What we are living for'
   )
+})
+
+test('default likes property to zero if missing', async () => {
+  const newBlog = {
+    title: 'What we are living for',
+    author: 'A. Camariana',
+    url: 'camariana.gm',
+  }
+
+  newBlog.likes === undefined
+    ? newBlog.likes = 0
+    : newBlog.likes
+
+  await api
+    .post('/api/blogs/')
+    .send(newBlog)
+    .expect('Content-Type', /application\/json/)
+
+  // const response = await api.get('/api/blogs')
+  // console.log(response.body)
+
+  expect(newBlog.likes).toBe(0)
 })
 
 afterAll(() => {
