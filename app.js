@@ -1,5 +1,5 @@
-const http = require('http')
 const express = require('express')
+require('express-async-errors')
 const app = express()
 const cors = require('cors')
 const morgan = require('morgan')
@@ -12,7 +12,7 @@ const logger = require('./utils/logger')
 
 
 
-logger.info('connecting to', config.MONGODB_URI)
+logger.info('connecting to database')
 
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
   .then(() => {
