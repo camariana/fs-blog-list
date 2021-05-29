@@ -72,8 +72,15 @@ const blogsInDb = async () => {
   return blogs.map(blog => blog.toJSON())
 }
 
+const likesToZero = async (blog) => {
+  return blog.likes === undefined
+    ? blog.likes = 0
+    : blog.likes
+}
+
 module.exports = {
   initialBlogs,
   nonExistingId,
   blogsInDb,
+  likesToZero,
 }
