@@ -161,21 +161,18 @@ describe('deletion of a blog', () => {
 })
 
 describe('updating a blog', () => {
-  test('succeeds ', async () => {
+  test('succeeds upon updating a blog', async () => {
     const blogsAtStart = await helper.blogsInDb()
+
     const blogToUpdate = blogsAtStart[0]
 
-    // await api
-    //   .put(`/api/blogs/${blogToDelete.id}`)
-    //   .expect(204)
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .expect(200)
 
-    // const blogsAtEnd = await helper.blogsInDb()
+    const blogsAtEnd = await helper.blogsInDb()
 
-    // expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
-
-    // const contents = blogsAtEnd.map(b => b.title)
-
-    // expect(contents).not.toContain(blogToDelete.content)
+    expect(blogsAtEnd).not.toEqual(blogToUpdate)
   })
 })
 
