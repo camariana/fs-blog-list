@@ -1,4 +1,5 @@
 const Blog = require('../models/blog')
+const Users = require('../models/user')
 
 // array containing the initial database state
 const initialBlogs = [
@@ -72,6 +73,12 @@ const blogsInDb = async () => {
   return blogs.map(blog => blog.toJSON())
 }
 
+// used for checking the users stored in the database
+const usersInDb = async () => {
+  const users = await Users.find({})
+  return users.map(user => user.toJSON())
+}
+
 const likesToZero = async (blog) => {
   return blog.likes === undefined
     ? blog.likes = 0
@@ -83,4 +90,5 @@ module.exports = {
   nonExistingId,
   blogsInDb,
   likesToZero,
+  usersInDb,
 }

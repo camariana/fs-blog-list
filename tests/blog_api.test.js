@@ -1,17 +1,19 @@
 const supertest = require('supertest')
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
   await Blog.insertMany(helper.initialBlogs)
 })
 
-
+// Blogs
 describe('When there is initially some blogs save', () => {
   test('blogs are returned as json', async () => {
     await api
@@ -44,7 +46,6 @@ describe('When there is initially some blogs save', () => {
     )
   })
 })
-
 
 describe('addition of a new blog', () => {
   test('succeeds with valid data', async () => {
@@ -106,7 +107,6 @@ describe('addition of a new blog', () => {
   })
 })
 
-
 describe('viewing a specific blog', () => {
   test('succeeds with a valid id', async () => {
     const blogsAtStart = await helper.blogsInDb()
@@ -139,7 +139,6 @@ describe('viewing a specific blog', () => {
       .expect(400)
   })
 })
-
 
 describe('deletion of a blog', () => {
   test('succeeds with status code 204 if id is valid', async () => {
@@ -176,6 +175,85 @@ describe('updating a blog', () => {
   })
 })
 
+
+
+// Users
+describe('when there is initially one user in db', () => {
+  beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('secret', 10)
+    const user = new User({
+      username: 'root',
+      passwordHash
+    })
+
+    await user.save()
+  })
+
+  test('creation succeeds with a fresh username', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'camariana',
+      name: 'A Camariana',
+      password: 'jannata',
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
+
+    const usernames = usersAtEnd.map(u => u.username)
+    expect(usernames).toContain(newUser.username)
+  })
+
+  test('creation fails with proper status code and message if username already taken', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'root',
+      name: 'Super User',
+      password: 'jannata',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(result.body.error).toContain('`username` to be unique')
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+
+  test('creation fails with proper status code and message if user is invalid', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      name: 'Super User',
+      password: 'jannata',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(result.body.error).toContain('is required')
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+  })
+})
 
 afterAll(() => {
   mongoose.connection.close()
