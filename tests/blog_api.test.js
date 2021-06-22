@@ -58,10 +58,10 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs/')
+      .set({ 'Authorization': 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNhbWFyaWFuYSIsImlkIjoiNjBiYThjODQ0OWIzMjU0YWUzZDFiZDBmIiwiaWF0IjoxNjI0MzQ2Mjg4LCJleHAiOjE2MjQzNDk4ODh9.ruPKk293QDfxUq1emdVH0sbuJEhRrfY9q9jVllaMYPA' })
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
-
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
