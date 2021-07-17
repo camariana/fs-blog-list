@@ -8,9 +8,27 @@ const api = supertest(app)
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
+let loggedInToken
 beforeEach(async () => {
   await Blog.deleteMany({})
   await Blog.insertMany(helper.initialBlogs)
+  await User.deleteMany({})
+
+  const passwordHash = await bcrypt.hash('jannata', 10)
+  const user = new User({
+    username: 'camariana',
+    passwordHash
+  })
+  await user.save()
+
+  const response = await api
+    .post('/api/login/')
+    .send({
+      username: 'camariana',
+      password: 'jannata'
+    })
+
+  loggedInToken = response.body.token
 })
 
 // Blogs
@@ -58,7 +76,7 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs/')
-      .set({ 'Authorization': 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNhbWFyaWFuYSIsImlkIjoiNjBiYThjODQ0OWIzMjU0YWUzZDFiZDBmIiwiaWF0IjoxNjI0MzQ2Mjg4LCJleHAiOjE2MjQzNDk4ODh9.ruPKk293QDfxUq1emdVH0sbuJEhRrfY9q9jVllaMYPA' })
+      .set({ Authorization: `bearer ${loggedInToken}` })
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -80,6 +98,7 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs/')
+      .set({ Authorization: `bearer ${loggedInToken}` })
       .send(newBlog)
       .expect(400)
 
@@ -99,6 +118,7 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs/')
+      .set({ Authorization: `bearer ${loggedInToken}` })
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -141,21 +161,39 @@ describe('viewing a specific blog', () => {
 })
 
 describe('deletion of a blog', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    const savedUser = await User.find({ username: 'camariana' })
+    //console.log(savedUser, savedUser[0])
+
+    const newBlog = new Blog({
+      title: 'What we are living for',
+      author: 'A. Camariana',
+      url: 'camariana.gm',
+      likes: 101,
+      id: savedUser[0]._id
+    })
+
+    await newBlog.save()
+    console.log(newBlog)
+  })
+
   test('succeeds with status code 204 if id is valid', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
+    console.log(blogToDelete)
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set({ Authorization: `bearer ${loggedInToken}` })
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
-
+    console.log(blogsAtEnd)
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
 
     const contents = blogsAtEnd.map(b => b.title)
-
-    expect(contents).not.toContain(blogToDelete.content)
+    expect(contents).not.toContain(blogToDelete.title)
   })
 })
 
@@ -179,24 +217,12 @@ describe('updating a blog', () => {
 
 // Users
 describe('when there is initially one user in db', () => {
-  beforeEach(async () => {
-    await User.deleteMany({})
-
-    const passwordHash = await bcrypt.hash('secret', 10)
-    const user = new User({
-      username: 'root',
-      passwordHash
-    })
-
-    await user.save()
-  })
-
   test('creation succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
-      username: 'camariana',
-      name: 'A Camariana',
+      username: 'asmaa',
+      name: 'Asmaa Camariana',
       password: 'jannata',
     }
 
@@ -217,8 +243,8 @@ describe('when there is initially one user in db', () => {
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
-      username: 'root',
-      name: 'Super User',
+      username: 'camariana',
+      name: 'A Camariana',
       password: 'jannata',
     }
 
