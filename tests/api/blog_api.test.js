@@ -1,12 +1,12 @@
 const supertest = require('supertest')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const helper = require('./test_helper')
-const app = require('../app')
+const helper = require('../utils/test_helper')
+const app = require('../../app')
 const api = supertest(app)
 
-const Blog = require('../models/blog')
-const User = require('../models/user')
+const Blog = require('../../models/blog')
+const User = require('../../models/user')
 
 let loggedInToken
 beforeEach(async () => {
@@ -164,36 +164,51 @@ describe('deletion of a blog', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
     const savedUser = await User.find({ username: 'camariana' })
-    //console.log(savedUser, savedUser[0])
+    //console.log(savedUser)
 
     const newBlog = new Blog({
       title: 'What we are living for',
       author: 'A. Camariana',
       url: 'camariana.gm',
       likes: 101,
-      id: savedUser[0]._id
+      user: savedUser[0]._id
     })
 
     await newBlog.save()
     console.log(newBlog)
   })
 
-  test('succeeds with status code 204 if id is valid', async () => {
+  test('succeeds with status code 200 if id is valid', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
-    console.log(blogToDelete)
+    //console.log(blogToDelete)
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
       .set({ Authorization: `bearer ${loggedInToken}` })
-      .expect(204)
+      .expect(200)
 
     const blogsAtEnd = await helper.blogsInDb()
-    console.log(blogsAtEnd)
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
 
     const contents = blogsAtEnd.map(b => b.title)
     expect(contents).not.toContain(blogToDelete.title)
+  })
+
+  test('fails with status code 401 if the id is invalid', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set({ Authorization: 'bearer fakeID' })
+      .expect(401)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
+
+    const contents = blogsAtEnd.map(b => b.title)
+    expect(contents).toContain(blogToDelete.title)
   })
 })
 

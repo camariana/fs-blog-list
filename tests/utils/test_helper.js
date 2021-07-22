@@ -1,5 +1,5 @@
-const Blog = require('../models/blog')
-const Users = require('../models/user')
+const Blog = require('../../models/blog')
+const Users = require('../../models/user')
 
 // array containing the initial database state
 const initialBlogs = [
@@ -8,35 +8,18 @@ const initialBlogs = [
     'title': 'An Open Letter to Jason and David',
     'author': 'Jane Yang',
     'url': 'https://janeyang.org/2021/04/27/an-open-letter-to-jason-and-david/',
-    'user': '60ba8c8449b3254ae3d1bd0f',
-  },
-  {
-    'likes': 72,
-    'title': 'TDD harms architecture',
-    'author': 'Robert C. Martin',
-    'url': 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
-    'user': '60ba8d0849b3254ae3d1bd10',
-  },
-  {
-    'likes': 75,
-    'title': 'Type wars',
-    'author': 'Robert C. Martin',
-    'url': 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
-    'user': '60ba8d0849b3254ae3d1bd10',
   },
   {
     'likes': 2,
     'title': 'Which jobs help people the most?',
     'author': 'Benjamin Todd',
     'url': 'https://80000hours.org/career-guide/high-impact-jobs/#approach-1-earning-to-give',
-    'user': '60ba8c8449b3254ae3d1bd0f',
   },
   {
     'likes': 4,
     'title': 'A Complete Guide To Accessible Front-End Components',
     'author': 'Vitaly Friedman',
     'url': 'https://www.smashingmagazine.com/2021/03/complete-guide-accessible-front-end-components/',
-    'user': '60ba8c8449b3254ae3d1bd0f',
   }
 ]
 
@@ -76,6 +59,6 @@ module.exports = {
   initialBlogs,
   nonExistingId,
   blogsInDb,
-  likesToZero,
   usersInDb,
+  likesToZero
 }
