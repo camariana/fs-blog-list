@@ -175,7 +175,7 @@ describe('deletion of a blog', () => {
     })
 
     await newBlog.save()
-    console.log(newBlog)
+    //console.log(newBlog)
   })
 
   test('succeeds with status code 200 if id is valid', async () => {

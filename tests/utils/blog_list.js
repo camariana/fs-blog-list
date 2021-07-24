@@ -27,6 +27,12 @@ const manyBlogs = [
     'title': 'A Complete Guide To Accessible Front-End Components',
     'author': 'Vitaly Friedman',
     'url': 'https://www.smashingmagazine.com/2021/03/complete-guide-accessible-front-end-components/',
+  },
+  {
+    likes: 0,
+    title: 'I am not your Yoko Ono',
+    author: 'Jane Yang',
+    url: 'https://janeyang.org/2021/04/13/in-search-of-dignity-at-work/',
   }
 ]
 

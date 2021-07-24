@@ -41,3 +41,35 @@ describe('favorite blog', () => {
   })
 
 })
+
+
+
+describe('most blogs', () => {
+  const blogs = blogList.manyBlogs
+
+  const results = {
+    author: 'Jane Yang',
+    blogs: 2
+  }
+
+  test('the most blogs', () => {
+    expect(listHelper.mostBlogs(blogs)).toEqual(results)
+  })
+
+})
+
+
+
+describe('most likes', () => {
+  const blogs = blogList.manyBlogs
+
+  const results = {
+    author: 'Jane Yang',
+    likes: 9
+  }
+
+  test('the most likes', () => {
+    expect(listHelper.mostLikes(blogs)).toEqual(results)
+  })
+
+})
