@@ -1,4 +1,8 @@
-GET http://localhost:3003/api/blogs/
+GET http://localhost:3001/api/blogs/
 
 ###
-GET http://localhost:3003/api/users/
+GET http://localhost:3001/api/users/
+
+
+###
+GET http://localhost:3001/api/comments/
