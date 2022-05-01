@@ -10,7 +10,7 @@ blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
     .find({})
     .populate('user', { username: 1, name: 1 })
-    .populate('comments', { comment: 1 })
+    //.populate('comments', { comment: 1 }) no need for this now, I can get the comments from the comments endpoint
   response.json(blogs.map(blog => blog.toJSON()))
 })
 
