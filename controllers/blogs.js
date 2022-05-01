@@ -63,11 +63,13 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   response.status(204).end()
 })
 
+// this was the https://stackoverflow.com/questions/64418672/findbyidandupdate-result-in-an-validation-failed-error-when-i-set-runvalidato
+
 // Update one blog
 blogsRouter.put('/:id',  async (request, response) => {
-  const body = request.body
+  const { likes } = request.body
 
-  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, body, { new: true })
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, { likes }, { new: true })
   response.json(updatedBlog)
 })
 

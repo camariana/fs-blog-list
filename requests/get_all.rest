@@ -3,6 +3,5 @@ GET http://localhost:3001/api/blogs/
 ###
 GET http://localhost:3001/api/users/
 
-
 ###
 GET http://localhost:3001/api/comments/
